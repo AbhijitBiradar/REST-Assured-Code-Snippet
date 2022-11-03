@@ -1029,3 +1029,94 @@ public void JsonArrayToArray()
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+Schema and DTD validation
+XML response bodies can also be verified against an XML Schema (XSD) or DTD.
+
+XSD example:
+
+expect().body(matchesXsd(xsd)).when().get("/carRecords");
+DTD example:
+ expect().body(matchesDtd(dtd)).when().get("/videos");
+ 
+ 
+ 
+You can also change the default base URI, base path, port and authentication scheme for all subsequent requests:
+
+RestAssured.baseURI = "http://myhost.org";
+RestAssured.port = 80;
+RestAssured.basePath = "/resource";
+RestAssured.authentication = basic("username", "password");
+RestAssured.rootPath = "x.y.z"; 
+
+RestAssured.filters(..); // List of default filters
+RestAssured.requestContentType(..); // Specify the default request content type
+RestAssured.responseContentType(..); // Specify the default response content type
+RestAssured.requestSpecification = .. // Default request specification
+RestAssured.responseSpecification = .. // Default response specification
+RestAssured.urlEncodingEnabled = .. // Specify if Rest Assured should URL encoding the parameters
+RestAssured.defaultParser = .. // Specify a default parser for response bodies if no registered parser can handle data of the response content-type
+RestAssured.registerParser(..) // Specify a parser for the given content-type
+RestAssured.unregisterParser(..) // Unregister a parser for the given content-type
+
+
+Request Logging
+	given().log().all(). .. // Log all request specification details including parameters, headers and body
+	given().log().params(). .. // Log only the parameters of the request
+	given().log().body(). .. // Log only the request body
+	given().log().headers(). .. // Log only the request headers
+	given().log().cookies(). .. // Log only the request cookies
+	
+	
+Response Logging	
+expect().log().body() ..
+expect().log().ifError(). ..
+expect().log().all(). .. 
+expect().log().statusLine(). .. // Only log the status line
+expect().log().headers(). .. // Only log the response headers
+expect().log().cookies(). .. // Only log the response cookies
+expect().log().ifStatusCodeIsEqualTo(302). .. // Only log if the status code is equal to 302
+expect().log().ifStatusCodeMatches(matcher). .. // Only log if the status code matches the supplied Hamcrest matcher
+
+
+Root path
+	To avoid duplicated paths in body expectations you can specify a root path. E.g. instead of writing:
+
+	expect().
+			 body("x.y.firstName", is(..)).
+			 body("x.y.lastName", is(..)).
+			 body("x.y.age", is(..)).
+			 body("x.y.gender", is(..)).
+	when().
+			 get("/something");
+			 
+	You can also set a default root path using:
+
+	RestAssured.rootPath = "x.y";
+	
+	
+Session Filter	
+
+	SessionFilter sessionFilter = new SessionFilter();
+
+	given().
+			  auth().form("John", "Doe").
+			  filter(sessionFilter).
+	expect().
+			  statusCode(200).
+	when().
+			  get("/formAuth");
+
+	given().
+			  filter(sessionFilter). // Reuse the same session filter instance to automatically apply the session id from the previous response
+	expect().
+			  statusCode(200).
+	when().
+			  get("/x");
+			  
+	To get session id caught by the SessionFilter you can do like this:
+
+	String sessionId = sessionFilter.getSessionId();		  
+
+
+
