@@ -1119,4 +1119,497 @@ Session Filter
 	String sessionId = sessionFilter.getSessionId();		  
 
 
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+GET Request In REST Assured
+
+import org.hamcrest.Matchers;
+import org.testng.annotations.Test;
+ 
+import io.restassured.RestAssured;
+ 
+public class GetBookingIds_RestfulBookerUsingBDDStyle {
+ 
+	
+	@Test
+	public void GetBookingIds_VerifyStatusCode() {
+		
+		// Given
+		RestAssured.given()
+			.baseUri("https://restful-booker.herokuapp.com")
+		// When
+		.when()
+			.get("/booking")
+		// Then
+		.then()
+			.statusCode(200)
+			.statusLine("HTTP/1.1 200 OK")
+			// To verify booking count
+			.body("bookingid", Matchers.hasSize(10))
+			// To verify booking id at index 3
+			.body("bookingid[3]", Matchers.equalTo(1));			
+		
+ 
+	}
+ 
+}
+
+
+POST Request In REST Assured
+
+import org.hamcrest.Matchers;
+ 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+ 
+public class BDDStylePostRequest {
+	
+	
+	public static void main(String[] args) {
+		
+		// There is no need to add escape character manually. Just paste string within double 
+		// quotes. It will automatically add escape sequence as required. 
+		String jsonString = "{\"username\" : \"admin\",\"password\" : \"password123\"}";
+		
+		
+		//GIVEN
+		RestAssured
+		.given()
+			.baseUri("https://restful-booker.herokuapp.com/auth")
+			.contentType(ContentType.JSON)
+			.body(jsonString)
+		// WHEN
+		.when()
+			.post()
+		// THEN
+		.then()
+			.assertThat()
+			.statusCode(200)
+			.body("token", Matchers.notNullValue())
+			.body("token.length()", Matchers.is(15))
+			.body("token", Matchers.matchesRegex("^[a-z0-9]+$"));
+		
+	
+	}
+ 
+}
+
+
+PUT Request In REST Assured
+
+import org.hamcrest.Matchers;
+ 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
+import io.restassured.specification.RequestSpecification;
+ 
+public class BDDStylePutRequest {
+ 
+	public static void main(String[] args) {
+ 
+		// There is no need to add escape character manually. Just paste string within
+		// double
+		// quotes. It will automatically add escape sequence as required.
+		String jsonString = "{\r\n" + "    \"firstname\" : \"Amod\",\r\n" + "    \"lastname\" : \"Mahajan\",\r\n"
+				+ "    \"totalprice\" : 111,\r\n" + "    \"depositpaid\" : true,\r\n" + "    \"bookingdates\" : {\r\n"
+				+ "        \"checkin\" : \"2018-01-01\",\r\n" + "        \"checkout\" : \"2019-01-01\"\r\n"
+				+ "    },\r\n" + "    \"additionalneeds\" : \"Breakfast\"\r\n" + "}";
+ 
+		//GIVEN
+		RestAssured
+			.given()
+					.baseUri("https://restful-booker.herokuapp.com/booking/1")
+					.cookie("token", "e88375c0fde687a")
+					.contentType(ContentType.JSON)
+					.body(jsonString)
+			// WHEN
+			.when()
+					.put()
+			// THEN
+			.then()
+					.assertThat()
+					.statusCode(200)
+					.body("firstname", Matchers.equalTo("Amod"))
+					.body("lastname", Matchers.equalTo("Mahajan"));
+ 
+	}
+}
+
+
+
+PATCH Request In REST Assured
+
+import org.hamcrest.Matchers;
+ 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
+import io.restassured.specification.RequestSpecification;
+ 
+public class BDDStylePatchRequest {
+ 
+	public static void main(String[] args) {
+		
+ 
+		// There is no need to add escape character manually. Just paste string within
+		// double
+		// quotes. It will automatically add escape sequence as required.
+		String jsonString = "{\r\n" + 
+				"    \"firstname\" : \"Amod\",\r\n" + 
+				"    \"lastname\" : \"Mahajan\"}";
+ 
+		//GIVEN
+		RestAssured
+			.given()
+					.baseUri("https://restful-booker.herokuapp.com/booking/1")
+					.cookie("token", "6608dc75eedd44f")
+					.contentType(ContentType.JSON)
+					.body(jsonString)
+			// WHEN
+			.when()
+					.patch()
+			// THEN
+			.then()
+					.assertThat()
+					.statusCode(200)
+					.body("firstname", Matchers.equalTo("Amod"))
+					.body("lastname", Matchers.equalTo("Mahajan"));
+ 
+	}
+}
+
+
+DELETE Request In REST Assured
+
+import io.restassured.RestAssured;
+ 
+public class BDDStyleDeleteRequest {
+ 
+	public static void main(String[] args) {
+		
+ 
+		// Delete Booking
+ 
+		//GIVEN
+		RestAssured
+			.given()
+					.baseUri("https://restful-booker.herokuapp.com/booking/1")
+					.cookie("token", "f7dddb1093eab19")
+			// WHEN
+			.when()
+					.delete()
+			// THEN
+			.then()
+					.assertThat()
+					.statusCode(201);
+		
+		// Verifying booking is deleted
+		// Given
+		RestAssured
+		    .given()
+				    .baseUri("https://restful-booker.herokuapp.com/booking/1")
+		// When
+			.when()
+					.get()
+		// Then
+			.then()
+					.statusCode(404);
+ 
+	}
+}
+
+
+
+Writing response into a JSON file
+
+mport java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import com.google.common.io.Files;
+ 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+ 
+public class WriteResponseInTextFile {
+ 
+	public static void main(String[] args) throws IOException {
+ 
+		// There is no need to add escape character manually. Just paste string within
+		// double
+		// quotes. It will automatically add escape sequence as required.
+		String jsonString = "{\"username\" : \"admin\",\"password\" : \"password123\"}";
+ 
+		// Create a request specification
+		RequestSpecification request = RestAssured.given();
+ 
+		// Setting content type to specify format in which request payload will be sent.
+		// ContentType is an ENUM.
+		request.contentType(ContentType.JSON);
+		// Adding URI
+		request.baseUri("https://restful-booker.herokuapp.com/auth");
+		// Adding body as string
+		request.body(jsonString);
+ 
+		// Calling POST method on URI. After hitting we get Response
+		Response response = request.post();
+ 
+		// Getting response as a string and writing in to a file
+		String responseAsString = response.asString();
+		// Converting in to byte array before writing
+		byte[] responseAsStringByte = responseAsString.getBytes();
+		// Creating a target file
+		File targetFileForString = new File("src/main/resources/targetFileForString.json");
+		// Writing into files
+		Files.write(responseAsStringByte, targetFileForString);
+ 
+		// Getting response as input stream and writing in to a file
+		InputStream responseAsInputStream = response.asInputStream();
+		// Creating a byte array with number of bytes of input stream (available()
+		// method)
+		byte[] responseAsInputStreamByte = new byte[responseAsInputStream.available()];
+		// Reads number of bytes from the input stream and stores them into the byte
+		// array responseAsInputStreamByte.
+		responseAsInputStream.read(responseAsInputStreamByte);
+		// Creating a target file
+		File targetFileForInputStream = new File("src/main/resources/targetFileForInputStream.json");
+		// Writing into files
+		Files.write(responseAsInputStreamByte, targetFileForInputStream);
+ 
+		// Directly getting a byte array
+		byte[] responseAsByteArray = response.asByteArray();
+		// Creating a target file
+		File targetFileForByteArray = new File("src/main/resources/targetFileForByteArray.json");
+		// Writing into files
+		Files.write(responseAsByteArray, targetFileForByteArray);
+ 
+	}
+ 
+}
+
+
+Building RequestSpecification Using RequestSpecBuilder
+
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+ 
+public class RequestSpecBuilderExample {
+ 
+	public static void main(String[] args) {
+ 
+		// Creating an object of RequestSpecBuilder
+		RequestSpecBuilder reqBuilder = new RequestSpecBuilder();
+		// Setting Base URI
+		reqBuilder.setBaseUri("https://restful-booker.herokuapp.com");
+		// Setting Base Path
+		reqBuilder.setBasePath("/booking");
+		// Getting RequestSpecification reference using builder() method
+		RequestSpecification reqSpec = reqBuilder.build();
+		
+		// Usage in different styles
+		// We can directly call http verbs on RequestSpecification
+		Response res1= reqSpec.get();
+		System.out.println(res1.asString());
+		System.out.println("======================");
+		
+		// We can also pass RequestSpecification reference variable in overloaded given() method
+		Response res2 = RestAssured.given(reqSpec).get();
+		System.out.println(res2.asString());
+		System.out.println("======================");
+				
+		// We can also pass RequestSpecification using spec() method
+		Response res3 = RestAssured.given().spec(reqSpec).get();
+		System.out.println(res3.asString());
+ 
+	}
+}
+
+
+
+Setting A Default RequestSpecification In Rest Assured
+
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+ 
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+ 
+public class DefaultRequestSpecificationExample {
+ 
+	@BeforeClass
+	public void setupDefaultRequestSpecification()
+	{
+		// Creating request specification using given()
+		RequestSpecification request1= RestAssured.given();
+		// Setting Base URI
+		request1.baseUri("https://restful-booker.herokuapp.com");
+		// Setting Base Path
+		request1.basePath("/booking");
+		
+		RestAssured.requestSpecification = request1;
+	}
+	
+	
+	@Test
+	public void useDefaultRequestSpecification()
+	{
+		// It will use default RequestSpecification
+		Response res = RestAssured.when().get();
+		System.out.println("Response for default: "+res.asString());
+	}
+	
+	@Test
+	public void overrideDefaultRequestSpecification()
+	{
+		// Creating request specification using with()
+		RequestSpecification request2= RestAssured.with();
+		// Setting Base URI
+		request2.baseUri("https://restful-booker.herokuapp.com");
+		// Setting Base Path
+		request2.basePath("/ping");
+		// Overriding default request specification
+		Response res = RestAssured.given().spec(request2).get();
+		System.out.println("Response for overriding: "+res.asString());
+	}
+}
+
+
+Querying RequestSpecification In Rest Assured
+
+import io.restassured.RestAssured;
+import io.restassured.http.Header;
+import io.restassured.http.Headers;
+import io.restassured.specification.QueryableRequestSpecification;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.SpecificationQuerier;
+ 
+public class QueryingRequestSpecificationExample {
+	
+	public static void main(String[] args) {
+		
+		// I am adding dummy request details for example
+		String JsonBody = "{\"firstName\":\"Amod\"}";
+		
+		// Creating request specification using given()
+		RequestSpecification request1= RestAssured.given();
+		// Setting Base URI
+		request1.baseUri("https://restful-booker.herokuapp.com")
+		// Setting Base Path
+		.basePath("/booking")
+		.body(JsonBody)
+		.header("header1", "headerValue1")
+		.header("header2", "headerValue2");
+		
+		// Querying RequestSpecification
+		// Use query() method of SpecificationQuerier class to query 
+		QueryableRequestSpecification queryRequest = SpecificationQuerier.query(request1);
+		
+		// get base URI
+		String retrieveURI = queryRequest.getBaseUri();
+		System.out.println("Base URI is : "+retrieveURI);
+		
+		// get base Path
+		String retrievePath = queryRequest.getBasePath();
+		System.out.println("Base PATH is : "+retrievePath);
+		
+		// get Body
+		String retrieveBody = queryRequest.getBody();
+		System.out.println("Body is : "+retrieveBody);
+		
+		// Get Headers
+		Headers allHeaders = queryRequest.getHeaders();
+		System.out.println("Printing all headers: ");
+		for(Header h : allHeaders)
+		{
+			System.out.println("Header name : "+ h.getName()+" Header value is : "+h.getValue());
+		}
+	}
+ 
+}
+
+
+Default Host And Port In Rest Assured
+
+RestAssured
+	.given()
+		.baseUri("https://restful-booker.herokuapp.com")
+		.basePath("/ping")
+		.port(8181)
+	.when()
+		.get();
+		
+		
+How To Send A JSON File As Payload To Request	
+
+import java.io.File;
+ 
+import org.hamcrest.Matchers;
+import org.testng.annotations.Test;
+ 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+ 
+public class PassFileAsPayload {
+	
+	@Test
+	public void passFileAsPayload()
+	{
+		// Creating a File instance 
+		File jsonDataInFile = new File("src/test/resources/Payloads/AuthPayload.json");
+		
+		//GIVEN
+		RestAssured
+		    .given()
+				.baseUri("https://restful-booker.herokuapp.com/auth")
+				.contentType(ContentType.JSON)
+				.body(jsonDataInFile)
+		// WHEN
+			.when()
+				.post()
+				// THEN
+			.then()
+				.assertThat()
+				.statusCode(200)
+				.body("token", Matchers.notNullValue())
+				.body("token.length()", Matchers.is(15))
+				.body("token", Matchers.matchesRegex("^[a-z0-9]+$"));
+	}
+ 
+}
+
+
+
+How To Send A XML File As Payload To Request	
+
+@Test
+	public void passXMLFileAsPayload()
+	{
+		// Creating a File instance 
+		File jsonDataInFile = new File("src/test/resources/Payloads/AuthPayload.xml");
+		
+		//GIVEN
+		RestAssured
+		    .given()
+				.baseUri("https://restful-booker.herokuapp.com/auth")
+				// Since I am passing payload as xml. Anyway it is optional as Rest Assured automatically identifies.
+				.contentType(ContentType.XML)
+				.body(jsonDataInFile)
+		// WHEN
+			.when()
+				.post()
+				// THEN
+			.then()
+				.assertThat()
+				.statusCode(200);
+	}
+	
+	
+
 
