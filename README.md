@@ -2499,3 +2499,739 @@ public class ListOfEmployeesSerializationDeserialization {
 		}
 	}
 }
+
+
+
+
+
+How To Create POJO Classes Of A Nested JSON Payload
+
+public class Employee {
+ 
+	// private variables or data members of pojo class
+	private String firstName;
+	private String lastName;
+	private String gender;
+	private int age;
+	private double salary;
+	private boolean married;
+	
+	// Getter and setter methods
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		this.age = age;
+	}
+	public double getSalary() {
+		return salary;
+	}
+	public void setSalary(double salary) {
+		this.salary = salary;
+	}
+	public boolean getMarried() {
+		return married;
+	}
+	public void setMarried(boolean married) {
+		this.married = married;
+	} 	
+}
+
+
+package RestfulBookerPojo;
+ 
+public class Contractors {
+	private String firstName;
+	private String lastName;
+	private String contractFrom;
+	private String contractTo;
+	
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public String getContractFrom() {
+		return contractFrom;
+	}
+	public void setContractFrom(String contractFrom) {
+		this.contractFrom = contractFrom;
+	}
+	public String getContractTo() {
+		return contractTo;
+	}
+	public void setContractTo(String contractTo) {
+		this.contractTo = contractTo;
+	}
+ 
+}
+
+
+package RestfulBookerPojo;
+ 
+public class CompanyPFDeails {
+	private String pfName;
+	private String pfCity;
+	private int pfYear;
+	private int noOfEmployees;
+	
+	public String getPfName() {
+		return pfName;
+	}
+	public void setPfName(String pfName) {
+		this.pfName = pfName;
+	}
+	public String getPfCity() {
+		return pfCity;
+	}
+	public void setPfCity(String pfCity) {
+		this.pfCity = pfCity;
+	}
+	public int getPfYear() {
+		return pfYear;
+	}
+	public void setPfYear(int pfYear) {
+		this.pfYear = pfYear;
+	}
+	public int getNoOfEmployees() {
+		return noOfEmployees;
+	}
+	public void setNoOfEmployees(int noOfEmployees) {
+		this.noOfEmployees = noOfEmployees;
+	}
+}
+
+
+package RestfulBookerPojo;
+ 
+import java.util.List;
+ 
+public class NestedPOJO {
+	
+	private String companyName;
+	private String companyHOCity;
+	private String companyCEO;
+	private List<String> supportedSalaryBanks;
+	private List<Integer> pincodesOfCityOffice;
+	List<Employee> employee;
+	List<Contractors> contractors;
+	CompanyPFDeails companyPFDeails;
+	
+	public String getCompanyName() {
+		return companyName;
+	}
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+	public String getCompanyHOCity() {
+		return companyHOCity;
+	}
+	public void setCompanyHOCity(String companyHOCity) {
+		this.companyHOCity = companyHOCity;
+	}
+	public String getCompanyCEO() {
+		return companyCEO;
+	}
+	public void setCompanyCEO(String companyCEO) {
+		this.companyCEO = companyCEO;
+	}
+	public List<String> getSupportedSalaryBanks() {
+		return supportedSalaryBanks;
+	}
+	public void setSupportedSalaryBanks(List<String> supportedSalaryBanks) {
+		this.supportedSalaryBanks = supportedSalaryBanks;
+	}
+	public List<Integer> getPincodesOfCityOffice() {
+		return pincodesOfCityOffice;
+	}
+	public void setPincodesOfCityOffice(List<Integer> pincodesOfCityOffice) {
+		this.pincodesOfCityOffice = pincodesOfCityOffice;
+	}
+	
+	public List<Employee> getEmployee() {
+		return employee;
+	}
+	public void setEmployee(List<Employee> employee) {
+		this.employee = employee;
+	}
+	public List<Contractors> getContractors() {
+		return contractors;
+	}
+	public void setContractors(List<Contractors> contractors) {
+		this.contractors = contractors;
+	}
+	public CompanyPFDeails getCompanyPFDeails() {
+		return companyPFDeails;
+	}
+	public void setCompanyPFDeails(CompanyPFDeails companyPFDeails) {
+		this.companyPFDeails = companyPFDeails;
+	}
+ 
+}
+
+
+package RestfulBookerPojo;
+ 
+import java.util.ArrayList;
+import java.util.List;
+ 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+ 
+public class CreateNestedJSONFromPOJOClasses {
+ 
+	public static void main(String[] args) throws JsonProcessingException {
+			
+		NestedPOJO nestedPOJO = new NestedPOJO();
+		nestedPOJO.setCompanyName("MSE");
+		nestedPOJO.setCompanyHOCity("Benagluru");
+		nestedPOJO.setCompanyCEO("Amod");
+		
+		List<String> supportedSalaryBanks = new ArrayList<String>();
+		supportedSalaryBanks.add("HDFC");
+		supportedSalaryBanks.add("ICICI");
+		supportedSalaryBanks.add("AXIS");
+		nestedPOJO.setSupportedSalaryBanks(supportedSalaryBanks);
+		
+		List<Integer> pincodesOfCityOffice = new ArrayList<Integer>();
+		pincodesOfCityOffice.add(560037);
+		pincodesOfCityOffice.add(360034);
+		pincodesOfCityOffice.add(456343);
+		nestedPOJO.setPincodesOfCityOffice(pincodesOfCityOffice);
+		
+		// Create first employee
+		Employee amod = new Employee();
+		amod.setFirstName("Amod");
+		amod.setLastName("Mahajan");
+		amod.setAge(28);
+		amod.setGender("Male");
+		amod.setSalary(10000.56);
+		amod.setMarried(false);
+ 
+		// Create second employee
+		Employee animesh = new Employee();
+		animesh.setFirstName("Animesh");
+		animesh.setLastName("Prashant");
+		animesh.setAge(30);
+		animesh.setGender("Male");
+		animesh.setSalary(20000.56);
+		animesh.setMarried(true);
+ 
+		// Create third employee
+		Employee kitty = new Employee();
+		kitty.setFirstName("Kitty");
+		kitty.setLastName("Gupta");
+		kitty.setAge(26);
+		kitty.setGender("Female");
+		kitty.setSalary(30000.56);
+		kitty.setMarried(false);
+ 
+		// Creating a List of Employees
+		List<Employee> allEMployees = new ArrayList<Employee>();
+		allEMployees.add(amod);
+		allEMployees.add(animesh);
+		allEMployees.add(kitty);
+		nestedPOJO.setEmployee(allEMployees);
+		
+		Contractors seema = new Contractors();
+		seema.setFirstName("Seema");
+		seema.setLastName("Singh");
+		seema.setContractFrom("Jan-2019");
+		seema.setContractTo("JAN-2025");
+		
+		Contractors hari = new Contractors();
+		hari.setFirstName("Hari");
+		hari.setLastName("Prasad");
+		hari.setContractFrom("Jan-2017");
+		hari.setContractTo("JAN-2030");
+		
+		List<Contractors> allContractors = new ArrayList<Contractors>();
+		allContractors.add(seema);
+		allContractors.add(hari);
+		nestedPOJO.setContractors(allContractors);
+		
+		CompanyPFDeails companyPFDeails = new CompanyPFDeails();
+		companyPFDeails.setPfName("XYZ");
+		companyPFDeails.setPfCity("Benagluru");
+		companyPFDeails.setPfYear(2012);
+		companyPFDeails.setNoOfEmployees(10);
+		nestedPOJO.setCompanyPFDeails(companyPFDeails);
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		String nestedJsonPayload = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(nestedPOJO);
+		System.out.println(nestedJsonPayload);
+	}
+}
+
+
+Serialization – Java Object To JSON Object Using Jackson API
+
+package PojoPayloads;
+ 
+import java.io.File;
+import java.io.IOException;
+ 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+ 
+class MSE_EmployeePojo {
+ 
+	private String firstName;
+	private String lastName;
+	private String gender;
+ 
+	private int age;
+	private double salary;
+	private boolean isMarried;
+ 
+	public String getFirstName() {
+		return firstName;
+	}
+ 
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+ 
+	public String getLastName() {
+		return lastName;
+	}
+ 
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+ 
+	public String getGender() {
+		return gender;
+	}
+ 
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+ 
+	public int getAge() {
+		return age;
+	}
+ 
+	public void setAge(int age) {
+		this.age = age;
+	}
+ 
+	public double getSalary() {
+		return salary;
+	}
+ 
+	public void setSalary(double salary) {
+		this.salary = salary;
+	}
+ 
+	public boolean isMarried() {
+		return isMarried;
+	}
+ 
+	public void setMarried(boolean isMarried) {
+		this.isMarried = isMarried;
+	}
+}
+ 
+public class UsageOfMSE_EmployeePojo {
+	
+	public static void main(String[] args) throws IOException {
+		
+		MSE_EmployeePojo mse_EmployeePojo = new MSE_EmployeePojo();
+		mse_EmployeePojo.setFirstName("Amod");
+		mse_EmployeePojo.setLastName("Mahajan");
+		mse_EmployeePojo.setAge(29);
+		mse_EmployeePojo.setSalary(10987.77);
+		mse_EmployeePojo.setMarried(false);
+		mse_EmployeePojo.setGender("M");
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		String convertedJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(mse_EmployeePojo);
+		System.out.println(convertedJson);
+		
+		String userDir = System.getProperty("user.dir");
+		File outputJsonFile = new File(userDir+ "\\src\\test\\resources\\EmployeePayload.json");
+		objectMapper.writerWithDefaultPrettyPrinter().writeValue(outputJsonFile, mse_EmployeePojo);
+	}
+ 
+}
+
+
+Serialization – JSON Object To Java Object Using Jackson API
+
+package SerializationDeserialization;
+ 
+public class Employee {
+ 
+	private String firstName;
+	private String lastName;
+	private String gender;
+ 
+	private int age;
+	private double salary;
+	private boolean married;
+ 
+	public String getFirstName() {
+		return firstName;
+	}
+ 
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+ 
+	public String getLastName() {
+		return lastName;
+	}
+ 
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+ 
+	public String getGender() {
+		return gender;
+	}
+ 
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+ 
+	public int getAge() {
+		return age;
+	}
+ 
+	public void setAge(int age) {
+		this.age = age;
+	}
+ 
+	public double getSalary() {
+		return salary;
+	}
+ 
+	public void setSalary(double salary) {
+		this.salary = salary;
+	}
+ 
+	public boolean getMarried() {
+		return married;
+	}
+ 
+	public void setMarried(boolean married) {
+		this.married = married;
+	}
+ 
+}
+
+
+package SerializationDeserialization;
+ 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+ 
+public class DeserializeJsonToJava {
+ 
+	public static void main(String[] args) throws JsonMappingException, JsonProcessingException {
+		
+		String jsonString = "{\r\n" + 
+				"  \"firstName\" : \"Amod\",\r\n" + 
+				"  \"lastName\" : \"Mahajan\",\r\n" + 
+				"  \"gender\" : \"M\",\r\n" + 
+				"  \"age\" : 29,\r\n" + 
+				"  \"salary\" : 10987.77,\r\n" + 
+				"  \"married\" : false\r\n" + 
+				"}";
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		// Pass JSON string and the POJO class 
+		Employee employeeObject = objectMapper.readValue(jsonString, Employee.class);
+		// Now use getter method to retrieve values
+		String firsName = employeeObject.getFirstName();
+		String lastName = employeeObject.getLastName();
+		String gender = employeeObject.getGender();
+		int age = employeeObject.getAge();
+		double salary = employeeObject.getSalary();
+		boolean married = employeeObject.getMarried();
+		
+		System.out.println("Details of Employee is as below:-");
+		System.out.println("First Name : "+firsName);
+		System.out.println("Last Name : "+lastName); 
+		System.out.println("Gender : "+gender);
+		System.out.println("Age : "+age);
+		System.out.println("Salary : "+salary);
+		System.out.println("Married : "+married);
+	}
+}
+
+
+Serialization – Java Object To JSON Object Using Gson API
+
+package SerializationDeserialization;
+ 
+public class Employee {
+ 
+	private String firstName;
+	private String lastName;
+	private String gender;
+ 
+	private int age;
+	private double salary;
+	private boolean married;
+ 
+	public String getFirstName() {
+		return firstName;
+	}
+ 
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+ 
+	public String getLastName() {
+		return lastName;
+	}
+ 
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+ 
+	public String getGender() {
+		return gender;
+	}
+ 
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+ 
+	public int getAge() {
+		return age;
+	}
+ 
+	public void setAge(int age) {
+		this.age = age;
+	}
+ 
+	public double getSalary() {
+		return salary;
+	}
+ 
+	public void setSalary(double salary) {
+		this.salary = salary;
+	}
+ 
+	public boolean getMarried() {
+		return married;
+	}
+ 
+	public void setMarried(boolean married) {
+		this.married = married;
+	}
+ 
+}
+
+
+
+package SerializationDeserialization;
+ 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+ 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
+ 
+public class SerializeJavaToJsonObjectUsingGSON {
+ 
+	public static void main(String[] args) throws JsonIOException, IOException {
+		
+		// Create a Employee java object
+		Employee employeeObject = new Employee();
+		employeeObject.setFirstName("Amod");
+		employeeObject.setLastName("Mahajan");
+		employeeObject.setAge(29);
+		employeeObject.setSalary(10987.77);
+		employeeObject.setMarried(false);
+		employeeObject.setGender("M");
+		
+		// Create a Gson object
+		Gson gson = new Gson();
+		// toJson(Object src) method converts Java object to JSON object
+		String employeeJsonSring = gson.toJson(employeeObject);
+		// Printing json string. It will be pretty print 
+		System.out.println("Non-pretty JSON String :- ");
+		System.out.println(employeeJsonSring);
+		
+		// We can create a configurable Gson instance using GsonBuilder class
+		Gson gsonBuilder = new GsonBuilder().setPrettyPrinting().create();
+		String employeeJsonSringUsingJsonBuilder = gsonBuilder.toJson(employeeObject);
+		System.out.println("Pretty JSON String :- ");
+		System.out.println(employeeJsonSringUsingJsonBuilder);
+		
+		// To write Json object in to a file, we need to pass a FileWriter object which is in direct implementation of 
+		// Appendable interface. Make sure you call flush() method otherwise json file will be empty.
+		String userDir = System.getProperty("user.dir");
+		File outputJsonFile = new File(userDir+ "\\src\\test\\resources\\EmployeePayloadUsingGson.json");
+		FileWriter fileWriter = new FileWriter(outputJsonFile);
+		gsonBuilder.toJson(employeeObject,fileWriter);
+		fileWriter.flush();
+		
+	}
+}
+
+
+
+De-Serialization – JSON Object To Java Object Using Gson API
+
+package SerializationDeserialization;
+ 
+public class Employee {
+ 
+	private String firstName;
+	private String lastName;
+	private String gender;
+ 
+	private int age;
+	private double salary;
+	private boolean married;
+ 
+	public String getFirstName() {
+		return firstName;
+	}
+ 
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+ 
+	public String getLastName() {
+		return lastName;
+	}
+ 
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+ 
+	public String getGender() {
+		return gender;
+	}
+ 
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+ 
+	public int getAge() {
+		return age;
+	}
+ 
+	public void setAge(int age) {
+		this.age = age;
+	}
+ 
+	public double getSalary() {
+		return salary;
+	}
+ 
+	public void setSalary(double salary) {
+		this.salary = salary;
+	}
+ 
+	public boolean getMarried() {
+		return married;
+	}
+ 
+	public void setMarried(boolean married) {
+		this.married = married;
+	}
+ 
+}
+
+
+package SerializationDeserialization;
+ 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+ 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.gson.Gson;
+ 
+public class DeserializeJsonToJavaObjectUsingGson {
+ 
+	public static void main(String[] args) throws JsonMappingException, JsonProcessingException, FileNotFoundException {
+ 
+		// De-serializing from JSON String
+		String jsonString = "{\r\n" + "  \"firstName\" : \"Amod\",\r\n" + "  \"lastName\" : \"Mahajan\",\r\n"
+				+ "  \"gender\" : \"M\",\r\n" + "  \"age\" : 29,\r\n" + "  \"salary\" : 10987.77,\r\n"
+				+ "  \"married\" : false\r\n" + "}";
+ 
+		Gson gson = new Gson();
+		// Pass JSON string and the POJO class
+		Employee employeeObject = gson.fromJson(jsonString, Employee.class);
+		// Now use getter method to retrieve values
+		String firsName = employeeObject.getFirstName();
+		String lastName = employeeObject.getLastName();
+		String gender = employeeObject.getGender();
+		int age = employeeObject.getAge();
+		double salary = employeeObject.getSalary();
+		boolean married = employeeObject.getMarried();
+ 
+		System.out.println("Details of Employee is as below:-");
+		System.out.println("First Name : " + firsName);
+		System.out.println("Last Name : " + lastName);
+		System.out.println("Gender : " + gender);
+		System.out.println("Age : " + age);
+		System.out.println("Salary : " + salary);
+		System.out.println("Married : " + married);
+ 
+		// De-serializing from a json file
+		String userDir = System.getProperty("user.dir");
+		File inputJsonFile = new File(userDir + "\\src\\test\\resources\\EmployeePayloadUsingGson.json");
+		FileReader fileReader = new FileReader(inputJsonFile);
+		Employee employeeObject1 = gson.fromJson(fileReader, Employee.class);
+ 
+		// Now use getter method to retrieve values
+		String firsName1 = employeeObject1.getFirstName();
+		String lastName1 = employeeObject1.getLastName();
+		String gender1 = employeeObject1.getGender();
+		int age1 = employeeObject1.getAge();
+		double salary1 = employeeObject1.getSalary();
+		boolean married1 = employeeObject1.getMarried();
+ 
+		System.out.println("Details of Employee from json file is as below:-");
+		System.out.println("First Name : " + firsName1);
+		System.out.println("Last Name : " + lastName1);
+		System.out.println("Gender : " + gender1);
+		System.out.println("Age : " + age1);
+		System.out.println("Salary : " + salary1);
+		System.out.println("Married : " + married1);
+	}
+}
+
+
+
+For More indept knowladge refer all articles from below URL
+http://makeseleniumeasy.com/rest-assured-tutorials/
