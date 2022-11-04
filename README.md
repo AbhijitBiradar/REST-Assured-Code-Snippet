@@ -1613,3 +1613,889 @@ How To Send A XML File As Payload To Request
 	
 
 
+
+Get & Assert Response Time Of Request
+
+import java.util.concurrent.TimeUnit;
+ 
+import org.hamcrest.Matchers;
+import org.testng.annotations.Test;
+ 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
+import io.restassured.specification.RequestSpecification;
+ 
+public class MeasuringResponseTimeInRestAssured {
+	
+	@Test
+	public void mesaureResponseTimeUsingResponseOptionsMethods()
+	{
+		// There is no need to add escape character manually. Just paste string within double 
+		// quotes. It will automatically add escape sequence as required. 
+		String jsonString = "{\"username\" : \"admin\",\"password\" : \"password123\"}";
+		
+		// Create a request specification 
+		RequestSpecification request= RestAssured.given();
+		
+		// Setting content type to specify format in which request payload will be sent.
+		// ContentType is an ENUM. 
+		request.contentType(ContentType.JSON);
+		//Adding URI
+		request.baseUri("https://restful-booker.herokuapp.com/auth");
+		// Adding body as string
+		request.body(jsonString);
+		
+		// Calling POST method on URI. After hitting we get Response
+		Response response = request.post();
+		
+		// By default response time is given in milliseconds
+		long responseTime1 = response.getTime();
+		System.out.println("Response time in ms using getTime():"+responseTime1);
+		
+		// we can get response time in other format as well
+		long responseTimeInSeconds = response.getTimeIn(TimeUnit.SECONDS);
+		System.out.println("Response time in seconds using getTimeIn():"+responseTimeInSeconds);
+		
+		
+		// Similar methods 
+		long responseTime2 = response.time();
+		System.out.println("Response time in ms using time():"+responseTime2);
+		
+		long responseTimeInSeconds1 = response.timeIn(TimeUnit.SECONDS);
+		System.out.println("Response time in seconds using timeIn():"+responseTimeInSeconds1);
+		
+	}
+ 
+	@Test
+	public void mesaureResponseTimeUsingValidatableResponseOptionsMethods() {
+		
+		// There is no need to add escape character manually. Just paste string within
+		// double
+		// quotes. It will automatically add escape sequence as required.
+		String jsonString = "{\"username\" : \"admin\",\"password\" : \"password123\"}";
+ 
+		// Create a request specification
+		RequestSpecification request = RestAssured.given();
+ 
+		// Setting content type to specify format in which request payload will be sent.
+		// ContentType is an ENUM.
+		request.contentType(ContentType.JSON);
+		// Adding URI
+		request.baseUri("https://restful-booker.herokuapp.com/auth");
+		// Adding body as string
+		request.body(jsonString);
+ 
+		// Calling POST method on URI. After hitting we get Response
+		Response response = request.post();
+ 
+		// Getting ValidatableResponse type
+		ValidatableResponse valRes = response.then();
+		// Asserting response time is less than 2000 milliseconds
+		// L just represent long. It is in millisecond by default.
+		valRes.time(Matchers.lessThan(2000L));
+		// Asserting response time is greater than 2000 milliseconds
+		valRes.time(Matchers.greaterThan(2000L));
+		// Asserting response time in between some values
+		valRes.time(Matchers.both(Matchers.greaterThanOrEqualTo(2000L)).and(Matchers.lessThanOrEqualTo(1000L)));
+ 
+		// If we want to assert in different time units
+		valRes.time(Matchers.lessThan(2L), TimeUnit.SECONDS);
+		
+				
+				
+	}
+	
+}
+
+Creating JSON Object Request Body Using Java Map
+
+import java.util.HashMap;
+import java.util.Map;
+ 
+import org.testng.annotations.Test;
+ 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+ 
+public class CreatingNestedJsonObject {
+	
+	@Test
+	public void CreatingNestedJsonObjectTest()
+	{
+		Map<String,Object> jsonBodyUsingMap = new HashMap<String,Object>();
+		jsonBodyUsingMap.put("firstname", "Jim");
+		jsonBodyUsingMap.put("lastname", "Brown");
+		jsonBodyUsingMap.put("totalprice", 111);
+		jsonBodyUsingMap.put("depositpaid", true);
+		
+		Map<String,String> bookingDatesMap = new HashMap<>();
+		bookingDatesMap.put("checkin", "2021-07-01");
+		bookingDatesMap.put("checkout", "2021-07-01");
+		
+		jsonBodyUsingMap.put("bookingdates", bookingDatesMap);
+		jsonBodyUsingMap.put("additionalneeds", "Breakfast");
+		
+		
+		//GIVEN
+		RestAssured
+		   .given()
+			  .baseUri("https://restful-booker.herokuapp.com/booking")
+			  .contentType(ContentType.JSON)
+			  .body(jsonBodyUsingMap)
+			  .log()
+			  .all()
+		// WHEN
+		   .when()
+			   .post()
+		// THEN
+		   .then()
+			   .assertThat()
+			   .statusCode(200)
+			   .log()
+			   .all();
+	}
+ 
+}
+
+
+Creating JSON Array Request Body Using List
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+ 
+import org.testng.annotations.Test;
+ 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+ 
+public class CreatingNestedJsonArray {
+	
+	@Test
+	public void CreatingNestedJsonObjectTest()
+	{
+		
+		// JSON Object for first guest
+		Map<String,Object> bookingOne = new HashMap<String,Object>();
+		bookingOne.put("firstname", "Amod");
+		bookingOne.put("lastname", "Mahajan");
+		bookingOne.put("totalprice", 222);
+		bookingOne.put("depositpaid", true);
+		
+		Map<String,String> bookingDatesMapForAmod = new HashMap<>();
+		bookingDatesMapForAmod.put("checkin", "2021-08-01");
+		bookingDatesMapForAmod.put("checkout", "2021-08-02");
+		
+		bookingOne.put("bookingdates", bookingDatesMapForAmod);
+		bookingOne.put("additionalneeds", "Breakfast");
+		
+		// JSON Object for second guest
+		Map<String,Object> bookingTwo = new HashMap<String,Object>();
+		bookingTwo.put("firstname", "Animesh");
+		bookingTwo.put("lastname", "Prashant");
+		bookingTwo.put("totalprice", 111);
+		bookingTwo.put("depositpaid", true);
+		
+		Map<String,String> bookingDatesMapForAnimesh = new HashMap<>();
+		bookingDatesMapForAnimesh.put("checkin", "2021-07-01");
+		bookingDatesMapForAnimesh.put("checkout", "2021-07-01");
+		
+		bookingTwo.put("bookingdates", bookingDatesMapForAnimesh);
+		bookingTwo.put("additionalneeds", "Breakfast");
+		
+		// Creating JSON array to add both JSON objects
+		List<Map<String,Object>> jsonArrayPayload = new ArrayList<>();
+		
+		jsonArrayPayload.add(bookingOne);
+		jsonArrayPayload.add(bookingTwo);
+		
+		
+		
+		//GIVEN
+		RestAssured
+		   .given()
+			  .baseUri("https://restful-booker.herokuapp.com/booking")
+			  .contentType(ContentType.JSON)
+			  .body(jsonArrayPayload)
+			  .log()
+			  .all()
+		// WHEN
+		   .when()
+			   .post()
+		// THEN
+		   .then()
+			   .assertThat()
+			   // Asserting status code as 500 as it does not accept json array payload
+			   .statusCode(500)
+			   .log()
+			   .all();
+	}
+ 
+}
+
+
+How To Create A JSON Object Using Jackson API – ObjectMapper – CreateObjectNode()
+
+import java.util.Iterator;
+import java.util.Map.Entry;
+ 
+import org.testng.annotations.Test;
+ 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+ 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+ 
+public class CreateJsonObjectUsingJacksonAPI {
+	
+	@Test
+	public void CreatingNestedJsonObjectTest() throws JsonProcessingException
+	{
+		// Create an object to ObjectMapper
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		// Creating Node that maps to JSON Object structures in JSON content
+		ObjectNode bookingDetails = objectMapper.createObjectNode();
+		
+		// It is similar to map put method. put method is overloaded to accept different types of data
+		// String as field value
+		bookingDetails.put("firstname", "Jim");
+		bookingDetails.put("lastname", "Brown");
+		// integer as field value
+		bookingDetails.put("totalprice", 111);
+		// boolean as field value
+		bookingDetails.put("depositpaid", true);
+		bookingDetails.put("additionalneeds", "Breakfast");
+		// Duplicate field name. Will override value
+		bookingDetails.put("additionalneeds", "Lunch");
+		// To print created json object
+		String createdPlainJsonObject = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(bookingDetails);
+		System.out.println("Created plain JSON Object is : \n"+ createdPlainJsonObject);
+		
+		// Since requirement is to create a nested JSON Object
+		ObjectNode bookingDateDetails = objectMapper.createObjectNode();
+		bookingDateDetails.put("checkin", "2021-07-01");
+		bookingDateDetails.put("checkout", "2021-07-01");
+		
+		// Since 2.4 , put(String fieldName, JsonNode value) is deprecated. So use either set(String fieldName, JsonNode value) or replace(String fieldName, JsonNode value)
+		bookingDetails.set("bookingdates", bookingDateDetails);
+		
+		// To get the created json object as string. Use writerWithDefaultPrettyPrinter() for proper formatting
+		String createdNestedJsonObject = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(bookingDetails);
+		System.out.println("Created nested JSON Object is : \n"+ createdNestedJsonObject);
+		
+		// We can retrieve field value by passing field name. Since it is string, use asText().
+		String firstName = bookingDetails.get("firstname").asText();
+		System.out.println("First name is : "+firstName);
+		
+		// We can use asText() as well but return type will be string
+		boolean depositpaid = bookingDetails.get("depositpaid").asBoolean();
+		System.out.println("deposit paid is : "+depositpaid);
+		
+		// To retrieve value of nested ObjectNode
+		bookingDetails.get("bookingdates").get("checkin").asText();
+		System.out.println("Checkin date is : "+depositpaid);
+		
+		// To get all field names
+		System.out.println("Count of fields in ObjectNode : "+ bookingDetails.size());
+		Iterator<String> allFieldNames = bookingDetails.fieldNames();
+		System.out.println("Fields are : ");
+		while(allFieldNames.hasNext())
+		{
+			System.out.println(allFieldNames.next());
+		}
+		
+		// To get all field values
+		Iterator<JsonNode> allFieldValues = bookingDetails.elements();
+		System.out.println("Fields values are : ");
+		while(allFieldValues.hasNext())
+		{
+			System.out.println(allFieldValues.next());
+		}
+		
+		// To get all key-value pair
+		Iterator<Entry<String, JsonNode>> allFieldsAndValues = bookingDetails.fields();
+		System.out.println("All fields and their values are : ");
+		while(allFieldsAndValues.hasNext())
+		{
+			Entry<String, JsonNode> node = allFieldsAndValues.next();
+			System.out.println("Key is : "+node.getKey()+" and its value is : "+node.getValue());
+		}
+		
+		// To remove a field
+		String removedFieldValue = bookingDetails.remove("firstname").asText();
+		System.out.println("Value of Removed field is " + removedFieldValue);
+		String removedJsonObject = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(bookingDetails);
+		System.out.println("After removing field , JSON Object is : \n"+ removedJsonObject);
+		
+		// To replace a field value, use put() method for non ObjectNode type and replace() or set() for ObjectNode
+		bookingDetails.put("firstname", "Amod");
+		bookingDetails.put("firstname", "Aaditya");
+		String updatedJsonObject = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(bookingDetails);
+		System.out.println("After updating field , JSON Object is : \n"+ updatedJsonObject);
+		
+	}
+ 
+}
+
+
+How To Use Java Object As Payload For API Request
+
+import org.testng.annotations.Test;
+ 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+ 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+ 
+public class UseCreatedJsonObjectUsingJacksonAPIPayload {
+	
+	@Test
+	public void CreatingNestedJsonObjectTest() throws JsonProcessingException
+	{
+		// Create an object to ObjectMapper
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		// Creating Node that maps to JSON Object structures in JSON content
+		ObjectNode bookingDetails = objectMapper.createObjectNode();
+		
+		// It is similar to map put method. put method is overloaded to accept different types of data
+		// String as field value
+		bookingDetails.put("firstname", "Jim");
+		bookingDetails.put("lastname", "Brown");
+		// integer as field value
+		bookingDetails.put("totalprice", 111);
+		// boolean as field value
+		bookingDetails.put("depositpaid", true);
+		bookingDetails.put("additionalneeds", "Breakfast");
+		// Duplicate field name. Will override value
+		bookingDetails.put("additionalneeds", "Lunch");
+		
+		// Since requirement is to create a nested JSON Object
+		ObjectNode bookingDateDetails = objectMapper.createObjectNode();
+		bookingDateDetails.put("checkin", "2021-07-01");
+		bookingDateDetails.put("checkout", "2021-07-01");
+		
+		// Since 2.4 , put(String fieldName, JsonNode value) is deprecated. So use either set(String fieldName, JsonNode value) or replace(String fieldName, JsonNode value)
+		bookingDetails.set("bookingdates", bookingDateDetails);
+		
+		
+		//GIVEN
+		RestAssured
+		   .given()
+			  .baseUri("https://restful-booker.herokuapp.com/booking")
+			  .contentType(ContentType.JSON)
+			  // Pass JSON pay load directly
+			  .body(bookingDetails)
+			  .log()
+			  .all()
+		// WHEN
+		   .when()
+			   .post()
+		// THEN
+		   .then()
+			   .assertThat()
+			   .statusCode(200)
+			   .log()
+			   .all();
+	}
+ 
+}
+
+
+How To Create JSON Array Using Jackson API – ObjectMapper – CreateArrayNode()	
+
+import java.util.Arrays;
+import java.util.Iterator;
+ 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+ 
+/*
+ * [
+   {
+      "firstname":"Jim",
+      "lastname":"Brown",
+      "totalprice":111,
+      "depositpaid":true,
+      "additionalneeds":"Breakfast",
+      "bookingdates":{
+         "checkin":"2021-07-01",
+         "checkout":"2021-07-01"
+      }
+   },
+   {
+      "firstname":"Amod",
+      "lastname":"Mahajan",
+      "totalprice":222,
+      "depositpaid":true,
+      "additionalneeds":"Lunch",
+      "bookingdates":{
+         "checkin":"2022-07-01",
+         "checkout":"2022-07-01"
+      }
+   }
+]
+ * 
+ */
+ 
+public class CreateJsonArrayUsingJacksonAPI {
+	
+	public static void main(String[] args) throws JsonProcessingException {
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		// Create an array which will hold two JSON objects
+		ArrayNode parentArray =  objectMapper.createArrayNode();
+		
+		// Creating Node that maps to JSON Object structures in JSON content
+		ObjectNode firstBookingDetails = objectMapper.createObjectNode();
+		
+		// It is similar to map put method. put method is overloaded to accept different types of data
+		// String as field value
+		firstBookingDetails.put("firstname", "Jim");
+		firstBookingDetails.put("lastname", "Brown");
+		// integer as field value
+		firstBookingDetails.put("totalprice", 111);
+		// boolean as field value
+		firstBookingDetails.put("depositpaid", true);
+		firstBookingDetails.put("additionalneeds", "Breakfast");
+		
+		// Since requirement is to create a nested JSON Object
+		ObjectNode firstBookingDateDetails = objectMapper.createObjectNode();
+		firstBookingDateDetails.put("checkin", "2021-07-01");
+		firstBookingDateDetails.put("checkout", "2021-07-01");
+		
+		// Since 2.4 , put(String fieldName, JsonNode value) is deprecated. So use either set(String fieldName, JsonNode value) or replace(String fieldName, JsonNode value)
+		firstBookingDetails.set("bookingdates", firstBookingDateDetails);
+		
+		
+		// Creating Node that maps to JSON Object structures in JSON content
+		ObjectNode secondBookingDetails = objectMapper.createObjectNode();
+		
+		// It is similar to map put method. put method is overloaded to accept different types of data
+		// String as field value
+		secondBookingDetails.put("firstname", "Amod");
+		secondBookingDetails.put("lastname", "Mahajan");
+		// integer as field value
+		secondBookingDetails.put("totalprice", 222);
+		// boolean as field value
+		secondBookingDetails.put("depositpaid", true);
+		secondBookingDetails.put("additionalneeds", "Breakfast");
+		
+		// Since requirement is to create a nested JSON Object
+		ObjectNode secondBookingDateDetails = objectMapper.createObjectNode();
+		secondBookingDateDetails.put("checkin", "2022-07-01");
+		secondBookingDateDetails.put("checkout", "2022-07-01");
+		
+		// Since 2.4 , put(String fieldName, JsonNode value) is deprecated. So use either set(String fieldName, JsonNode value) or replace(String fieldName, JsonNode value)
+		secondBookingDetails.set("bookingdates", secondBookingDateDetails);
+		
+		
+		parentArray.add(firstBookingDetails);
+		parentArray.add(secondBookingDetails);
+		
+		// OR
+		parentArray.addAll(Arrays.asList(firstBookingDetails,secondBookingDetails));
+		
+		String jsonArrayAsString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(parentArray);
+		System.out.println("Created Json Array is : ");
+		System.out.println(jsonArrayAsString);
+		System.out.println("=======================================================================================");
+		// To get json array element using index
+		JsonNode firstElement = parentArray.get(0);
+		System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(firstElement));
+		System.out.println("=======================================================================================");
+		// To get size of JSON array
+		int sizeOfArray = parentArray.size();
+		System.out.println("Size of array is "+sizeOfArray);
+		System.out.println("=======================================================================================");
+		// To iterate JSON Array
+		Iterator<JsonNode> iteraor = parentArray.iterator();
+		System.out.println("Prining Json Node using iterator : ");
+		while(iteraor.hasNext())
+		{
+			JsonNode currentJsonNode = iteraor.next();
+			System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(currentJsonNode));
+		}
+		System.out.println("=======================================================================================");
+		// To remove an element from array
+		parentArray.remove(0);
+		System.out.println("After removing first element from array : "+ objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(parentArray));
+		System.out.println("=======================================================================================");
+		// To empty JSON Array
+		parentArray.removeAll();
+		System.out.println("After removing all elements from array : "+ objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(parentArray));
+			
+	}
+ 
+}
+
+
+What Is Plain Old Java Object (POJO) ?
+
+public class EmployeePojo {
+	
+	// Private fields
+	private String firstName;
+	private String lastName;
+	private double salary;
+	private String cityName;
+	private boolean isMarried;
+	private char gender;
+	private String fullName;
+	
+	// Public constructor
+	public EmployeePojo()
+	{
+		
+	}
+	
+	// Business logic to get full name
+	public String getFulName()
+	{
+		this.fullName =  this.firstName + " "+ this.lastName;
+		return fullName;
+	}
+	
+	// Public getter setter methods
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public double getSalary() {
+		return salary;
+	}
+	public void setSalary(double salary) {
+		this.salary = salary;
+	}
+	public String getCityName() {
+		return cityName;
+	}
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+	public boolean isMarried() {
+		return isMarried;
+	}
+	public void setMarried(boolean isMarried) {
+		this.isMarried = isMarried;
+	}
+	public char getGender() {
+		return gender;
+	}
+	public void setGender(char gender) {
+		this.gender = gender;
+	}
+	
+}
+
+package PojoPayloads;
+ 
+public class EmployeePojoUsage {
+	
+	public static void main(String[] args) {
+		
+		EmployeePojo Amod;
+		EmployeePojo Animesh;
+		
+		// Setting employees details 
+		Amod = new EmployeePojo();
+		Amod.setFirstName("Amod");
+		Amod.setLastName("Mahajan");
+		Amod.setCityName("Benagluru");
+		Amod.setGender('M');
+		Amod.setMarried(false);
+		Amod.setSalary(10000.54);
+		
+		Animesh = new EmployeePojo();
+		Animesh.setFirstName("Animesh");
+		Animesh.setLastName("Prashant");
+		Animesh.setCityName("Kolkata");
+		Animesh.setGender('M');
+		Animesh.setMarried(false);
+		Animesh.setSalary(23232.45);
+		
+		// Printing details of employees
+		System.out.println("Details of Employees :-");
+		System.out.println("First Name : "+ Amod.getFirstName());
+		System.out.println("Last Name  : "+ Amod.getLastName());
+		System.out.println("Full Name  : "+ Amod.getFulName());
+		System.out.println("City Name  : "+ Amod.getCityName());
+		System.out.println("Is Married?: "+ Amod.isMarried());
+		System.out.println("Gender     : "+ Amod.getGender());
+		System.out.println("Salary     : "+ Amod.getSalary());
+		
+		
+		System.out.println("==========================================");
+		System.out.println("First Name : "+ Animesh.getFirstName());
+		System.out.println("Last Name  : "+ Animesh.getLastName());
+		System.out.println("Full Name  : "+ Animesh.getFulName());
+		System.out.println("City Name  : "+ Animesh.getCityName());
+		System.out.println("Is Married?: "+ Animesh.isMarried());
+		System.out.println("Gender     : "+ Animesh.getGender());
+		System.out.println("Salary     : "+ Animesh.getSalary());
+		
+	}
+}
+
+
+How To Create POJO Classes Of A JSON Object Payload
+
+package RestfulBookerPojo;
+ 
+public class Employee {
+ 
+	// private variables or data members of pojo class
+	private String firstName;
+	private String lastName;
+	private String gender;
+	private int age;
+	private double salary;
+	private boolean married;
+	
+	// Getter and setter methods
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		this.age = age;
+	}
+	public double getSalary() {
+		return salary;
+	}
+	public void setSalary(double salary) {
+		this.salary = salary;
+	}
+	public boolean getMarried() {
+		return married;
+	}
+	public void setMarried(boolean married) {
+		this.married = married;
+	} 
+}
+
+package RestfulBookerPojo;
+ 
+import org.testng.annotations.Test;
+ 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+ 
+public class EmployeeSerializationDeserialization {
+ 
+	@Test
+	public void createEmployeeJSONFromEmployeePOJOClass() throws JsonProcessingException
+	{
+		// Just create an object of Pojo class
+		Employee employee = new Employee();
+		// Set value as you wish
+		employee.setFirstName("Amod");
+		employee.setLastName("Mahajan");
+		employee.setAge(29);
+		employee.setGender("Male");
+		employee.setSalary(3434343);
+		employee.setMarried(false);
+		
+		// Converting a Java class object to a JSON payload as string
+		ObjectMapper objectMapper = new ObjectMapper();
+		String employeeJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(employee);
+		System.out.println(employeeJson);
+	}
+	
+	
+	@Test
+	public void getPojoFromEmployeeObject() throws JsonProcessingException
+	{
+		// Just create an object of Pojo class
+		Employee employee = new Employee();
+		// Set value as you wish
+		employee.setFirstName("Amod");
+		employee.setLastName("Mahajan");
+		employee.setAge(29);
+		employee.setGender("Male");
+		employee.setSalary(3434343);
+		employee.setMarried(false);
+		
+		// Converting a Java class object to a JSON payload as string
+		ObjectMapper objectMapper = new ObjectMapper();
+		String employeeJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(employee);
+		
+		
+		// Converting EMployee json string to Employee class object
+		Employee employee2 = objectMapper.readValue(employeeJson, Employee.class);
+		System.out.println("First Name of employee : "+employee2.getFirstName());
+		System.out.println("Last Name of employee : "+employee2.getLastName());
+		System.out.println("Age of employee : "+employee2.getAge());
+		System.out.println("Gender of employee : "+employee2.getGender());
+		System.out.println("Salary of employee : "+employee2.getSalary());
+		System.out.println("Marital status of employee : "+employee2.getMarried());
+	}
+}
+
+
+How To Create POJO Classes Of A JSON Array Payload
+
+package RestfulBookerPojo;
+ 
+public class Employee {
+ 
+	// private variables or data members of pojo class
+	private String firstName;
+	private String lastName;
+	private String gender;
+	private int age;
+	private double salary;
+	private boolean married;
+	
+	// Getter and setter methods
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		this.age = age;
+	}
+	public double getSalary() {
+		return salary;
+	}
+	public void setSalary(double salary) {
+		this.salary = salary;
+	}
+	public boolean getMarried() {
+		return married;
+	}
+	public void setMarried(boolean married) {
+		this.married = married;
+	} 
+}
+
+package RestfulBookerPojo;
+ 
+import java.util.ArrayList;
+import java.util.List;
+ 
+import org.testng.annotations.Test;
+ 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+ 
+public class ListOfEmployeesSerializationDeserialization {
+ 
+	public String allEmployeeJson;
+ 
+	@Test
+	public void createListOfEmployeesJSONArrayFromEmployeePOJOClass() throws JsonProcessingException {
+		// Create first employee
+		Employee amod = new Employee();
+		amod.setFirstName("Amod");
+		amod.setLastName("Mahajan");
+		amod.setAge(29);
+		amod.setGender("Male");
+		amod.setSalary(10000.56);
+		amod.setMarried(false);
+ 
+		// Create second employee
+		Employee animesh = new Employee();
+		animesh.setFirstName("Animesh");
+		animesh.setLastName("Prashant");
+		animesh.setAge(30);
+		animesh.setGender("Male");
+		animesh.setSalary(20000.56);
+		animesh.setMarried(true);
+ 
+		// Create third employee
+		Employee kitty = new Employee();
+		kitty.setFirstName("Kitty");
+		kitty.setLastName("Gupta");
+		kitty.setAge(27);
+		kitty.setGender("Female");
+		kitty.setSalary(30000.56);
+		kitty.setMarried(false);
+ 
+		// Creating a List of Employees
+		List<Employee> allEMployees = new ArrayList<Employee>();
+		allEMployees.add(amod);
+		allEMployees.add(animesh);
+		allEMployees.add(kitty);
+ 
+		// Converting a Java class object to a JSON Array payload as string
+		ObjectMapper objectMapper = new ObjectMapper();
+		allEmployeeJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(allEMployees);
+		System.out.println(allEmployeeJson);
+	}
+ 
+	@Test
+	public void getPojoFromEmployeeObject() throws JsonProcessingException {
+		// Converting EMployee json Array string to Employee class object
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<Employee> allEmploeesDetails = objectMapper.readValue(allEmployeeJson,
+				new TypeReference<List<Employee>>() {
+				});
+		for (Employee emp : allEmploeesDetails) {
+			System.out.println("========================================================");
+			System.out.println("First Name of employee : " + emp.getFirstName());
+			System.out.println("Last Name of employee : " + emp.getLastName());
+			System.out.println("Age of employee : " + emp.getAge());
+			System.out.println("Gender of employee : " + emp.getGender());
+			System.out.println("Salary of employee : " + emp.getSalary());
+			System.out.println("Marital status of employee : " + emp.getMarried());
+			System.out.println("========================================================");
+		}
+	}
+}
