@@ -5,39 +5,42 @@
 
 How to validate HTTP response status code
 
+```java
+
 import static org.junit.Assert.*;
-import org.testng.Assert;   //used to validate response status 
+import org.testng.Assert;   
 import org.testng.annotations.Test;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 public class RestAssuredTestResponse {
-              @Test
-              public void GetBookDetails()
-       {  
-           // Specify the base URL to the RESTful web service
-           RestAssured.baseURI = "https://demoqa.com/BookStore/v1/Books";
-           // Get the RequestSpecification of the request to be sent to the server
-           RequestSpecification httpRequest = RestAssured.given();
+	@Test
+	public void GetBookDetails(){  
+		// Specify the base URL to the RESTful web service
+		RestAssured.baseURI = "https://demoqa.com/BookStore/v1/Books";
+		// Get the RequestSpecification of the request to be sent to the server
+		RequestSpecification httpRequest = RestAssured.given();
 
-           Response response = httpRequest.get("");
+		Response response = httpRequest.get("");
 
-           // Get the status code of the request. 
-           //If request is successful, status code will be 200
-          int statusCode = response.getStatusCode();
+		// Get the status code of the request. 
+		//If request is successful, status code will be 200
+		int statusCode = response.getStatusCode();
 
-           // Assert that correct status code is returned.
-          Assert.assertEquals(statusCode /*actual value*/, 200 /*expected value*/, 
-            "Correct status code returned");
+		// Assert that correct status code is returned.
+		Assert.assertEquals(statusCode /*actual value*/, 200 /*expected value*/, 
+		"Correct status code returned");
 
-    }
+	}
 }
 
-
+```
 
 How to validate the HTTP error status code?
 
+```java
+
 import static org.junit.Assert.*;
 import org.testng.Assert;   //used to validate response status 
 import org.testng.annotations.Test;
@@ -46,33 +49,34 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 public class RestAssuredTestResponse {
-              
-              @Test
-              public void GetPetDetails()
-              {  
-                 // Specify the base URL to the RESTful web service
-           RestAssured.baseURI = "https://demoqa.com/Account/v1/User/";
-           // Get the RequestSpecification of the request to be sent to the server
-           RequestSpecification httpRequest = RestAssured.given();
 
-           Response response = httpRequest.get("test");
+	@Test
+	public void GetPetDetails()	{  
+		// Specify the base URL to the RESTful web service
+		RestAssured.baseURI = "https://demoqa.com/Account/v1/User/";
+		// Get the RequestSpecification of the request to be sent to the server
+		RequestSpecification httpRequest = RestAssured.given();
 
-           // Get the status code of the request. 
-           //If request is successful, status code will be 200
-           int statusCode = response.getStatusCode();
+		Response response = httpRequest.get("test");
 
-           // Assert that correct status code is returned.
-           Assert.assertEquals(statusCode /*actual value*/, 200 /*expected value*/, 
-           "Correct status code returned");
-              }
+		// Get the status code of the request. 
+		//If request is successful, status code will be 200
+		int statusCode = response.getStatusCode();
+
+		// Assert that correct status code is returned.
+		Assert.assertEquals(statusCode /*actual value*/, 200 /*expected value*/, 
+		"Correct status code returned");
+	}
 }
 
+```
 
 How to validate the response status line?
 
+```java
+
 @Test
-public void GetBookDetails()
-{  
+public void GetBookDetails(){  
     // Specify the base URL to the RESTful web service 
     RestAssured.baseURI = "https://demoqa.com/BookStore/v1/Books"; 
     // Get the RequestSpecification of the request to be sent to the server 
@@ -82,54 +86,59 @@ public void GetBookDetails()
     // Get the status line from the Response in a variable called statusLine
     String statusLine = response.getStatusLine();
     Assert.assertEquals(statusLine /*actual value*/, "HTTP/1.1 200 OK" 
-      /*expected value*/, "Correct status code returned");
+    /*expected value*/, "Correct status code returned");
 
 }
 
+```
 
 How to access and read HTTP Response headers using REST Assured?
 
+```java
+
 @Test 
-public void IteratingHeaders() 
-{ RestAssured.baseURI = "https://demoqa.com/BookStore/v1/Books"; 
- RequestSpecification httpRequest = RestAssured.given(); 
- Response response = httpRequest.get(""); 
- // Get all the headers and then iterate over allHeaders to print each header 
- Headers allHeaders = response.headers(); 
- // Iterate over all the Headers 
- for(Header header : allHeaders) { 
-   System.out.println("Key: " + header.getName() + " Value: " + header.getValue()); 
- } 
+public void IteratingHeaders(){ 
+	RestAssured.baseURI = "https://demoqa.com/BookStore/v1/Books"; 
+	RequestSpecification httpRequest = RestAssured.given(); 
+	Response response = httpRequest.get(""); 
+	// Get all the headers and then iterate over allHeaders to print each header 
+	Headers allHeaders = response.headers(); 
+	// Iterate over all the Headers 
+ 	for(Header header : allHeaders) { 
+ 		System.out.println("Key: " + header.getName() + " Value: " + header.getValue()); 
+ 	} 
 }
 
-
+```
 
 Let us demonstrate the .header(String arg0) method to get a particular header. Here we pass the exact header name as an argument.
 
+```java
+
 @Test
 public void GetBookHeaders() { 
-RestAssured.baseURI = "https://demoqa.com/BookStore/v1/Books";
-RequestSpecification httpRequest = RestAssured.given();
-Response response = httpRequest.get(""); 
-// Access header with a given name. 
-String contentType = response.header("Content-Type"); 
-System.out.println("Content-Type value: " + contentType); 
-// Access header with a given name. 
-String serverType = response.header("Server"); 
-System.out.println("Server value: " + serverType); 
-// Access header with a given name. Header = Content-Encoding 
-String acceptLanguage = response.header("Content-Encoding"); 
-System.out.println("Content-Encoding: " + acceptLanguage); 
-  } 
- } 
+	RestAssured.baseURI = "https://demoqa.com/BookStore/v1/Books";
+	RequestSpecification httpRequest = RestAssured.given();
+	Response response = httpRequest.get(""); 
+	// Access header with a given name. 
+	String contentType = response.header("Content-Type"); 
+	System.out.println("Content-Type value: " + contentType); 
+	// Access header with a given name. 
+	String serverType = response.header("Server"); 
+	System.out.println("Server value: " + serverType); 
+	// Access header with a given name. Header = Content-Encoding 
+	String acceptLanguage = response.header("Content-Encoding"); 
+	System.out.println("Content-Encoding: " + acceptLanguage); 
 }
 
+```
 
 How to validate HTTP Response Header using Rest Assured?
 
+```java
+
 @Test
-public void ValidateBookHeaders() 
-{ 
+public void ValidateBookHeaders(){ 
     RestAssured.baseURI = "https://demoqa.com/BookStore/v1/Books";
     RequestSpecification httpRequest = RestAssured.given();
     Response response = httpRequest.get("");
@@ -141,12 +150,15 @@ public void ValidateBookHeaders()
     Assert.assertEquals(serverType /* actual value */, "nginx/1.17.10 (Ubuntu)" /* expected value */);
  }
  
+ ```
+ 
  
  Read JSON Response Body using Rest Assured
  
+ ```java
+ 
  @Test
-public void WeatherMessageBody()
-{
+public void WeatherMessageBody(){
 	RestAssured.baseURI = "https://restapi.demoqa.com/utilities/weather/city";
 	RequestSpecification httpRequest = RestAssured.given();
 	Response response = httpRequest.get("/Hyderabad");
@@ -159,12 +171,14 @@ public void WeatherMessageBody()
 	System.out.println("Response Body is: " + body.asString());
 }
 
+```
 
 How to Validate Response Body contains some String?
 
+```java
+
 @Test
-public void WeatherMessageBody()
-{
+public void WeatherMessageBody(){
 	RestAssured.baseURI = "https://restapi.demoqa.com/utilities/weather/city";
 	RequestSpecification httpRequest = RestAssured.given();
 	Response response = httpRequest.get("/Hyderabad");
@@ -178,12 +192,14 @@ public void WeatherMessageBody()
 	Assert.assertEquals(bodyAsString.contains("Hyderabad") /*Expected value*/, true /*Actual Value*/, "Response body contains Hyderabad");
 }
 
+```
 
 Check String presence by ignoring alphabet casing
 
+```java
+
 @Test
-public void WeatherMessageBody()
-{
+public void WeatherMessageBody(){
 	RestAssured.baseURI = "https://restapi.demoqa.com/utilities/weather/city";
 	RequestSpecification httpRequest = RestAssured.given();
 	Response response = httpRequest.get("/Hyderabad");
@@ -199,12 +215,14 @@ public void WeatherMessageBody()
 	Assert.assertEquals(bodyAsString.toLowerCase().contains("hyderabad") /*Expected value*/, true /*Actual Value*/, "Response body contains Hyderabad");
 }
 
+```
 
 How to Extract a Node text from Response using JsonPath?
 
+```java
+
 @Test
-public void VerifyCityInJsonResponse()
-{
+public void VerifyCityInJsonResponse(){
 	RestAssured.baseURI = "https://restapi.demoqa.com/utilities/weather/city";
 	RequestSpecification httpRequest = RestAssured.given();
 	Response response = httpRequest.get("/Hyderabad");
@@ -224,11 +242,14 @@ public void VerifyCityInJsonResponse()
 
 }
 
+```
+
 Sample Code to read all the nodes from Weather API Response
 
+```java
+
 @Test
-public void DisplayAllNodesInWeatherAPI()
-{
+public void DisplayAllNodesInWeatherAPI(){
 	RestAssured.baseURI = "https://restapi.demoqa.com/utilities/weather/city";
 	RequestSpecification httpRequest = RestAssured.given();
 	Response response = httpRequest.get("/Hyderabad");
@@ -255,10 +276,13 @@ public void DisplayAllNodesInWeatherAPI()
 	System.out.println("City received from Response " + jsonPathEvaluator.get("WindDirectionDegree"));
 }
 
-
+```
 ------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+
 # REST API Testing – Advance
+
 
 Changing the HTTP Method on a POST Request using Rest Assured
 
