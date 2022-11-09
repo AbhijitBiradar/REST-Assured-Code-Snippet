@@ -286,26 +286,31 @@ public void DisplayAllNodesInWeatherAPI(){
 
 Changing the HTTP Method on a POST Request using Rest Assured
 
-public void UserRegistrationSuccessful() 
-{ 
-    RestAssured.baseURI ="https://demoqa.com/Account/v1"; 
-    RequestSpecification request = RestAssured.given(); 
-    JSONObject requestParams = new JSONObject();
-    requestParams.put("userName", "test_rest");
-    requestParams.put("password", "Testrest@123"); 
-    request.body(requestParams.toJSONString());
-    Response response = request.put("/User"); 
-    ResponseBody body = response.getBody();
-    System.out.println(response.getStatusLine());
-    System.out.println(body.asString());
+```java
+@Test
+public void UserRegistrationSuccessful(){ 
+	RestAssured.baseURI ="https://demoqa.com/Account/v1"; 
+	RequestSpecification request = RestAssured.given(); 
+	JSONObject requestParams = new JSONObject();
+	requestParams.put("userName", "test_rest");
+	requestParams.put("password", "Testrest@123"); 
+	request.body(requestParams.toJSONString());
+	Response response = request.put("/User"); 
+	ResponseBody body = response.getBody();
+	System.out.println(response.getStatusLine());
+	System.out.println(body.asString());
      
 }
 
+```
+
+
 Basic Authentication Flow
 
+```java
+
 @Test
-public void AuthenticationBasics()
-{
+public void AuthenticationBasics(){
 	RestAssured.baseURI = "https://restapi.demoqa.com/authentication/CheckForAuthentication";
 	RequestSpecification request = RestAssured.given();
 
@@ -314,7 +319,11 @@ public void AuthenticationBasics()
 	System.out.println("Status message " + response.body().asString());
 }
 
+```
+
 How to implement a PUT Request using Rest Assured?
+
+```java
 
 @Test
 public void updateBook() {
@@ -331,32 +340,36 @@ public void updateBook() {
 
 }
 
+```
+
 How to make a Delete Request using Rest Assured?
 
+```java
+
 @Test
-	  public void deleteBook() {
-		  RestAssured.baseURI = baseUrl;
-		  RequestSpecification httpRequest = RestAssured.given().header("Authorization", "Bearer " + token)
-			         .header("Content-Type", "application/json");
-		 
-		  //Calling the Delete API with request body
-		  Response res = httpRequest.body("{ \"isbn\": \"" + isbn + "\", \"userId\": \"" + userId + "\"}").delete("/BookStore/v1/Book");
-	 
-		  //Fetching the response code from the request and validating the same
-		  System.out.println("The response code is - " +res.getStatusCode());
-	      Assert.assertEquals(res.getStatusCode(),204);
-     
-	  }
+public void deleteBook() {
+	RestAssured.baseURI = baseUrl;
+	RequestSpecification httpRequest = RestAssured.given().header("Authorization", "Bearer " + token)
+			 .header("Content-Type", "application/json");
+
+	//Calling the Delete API with request body
+	Response res = httpRequest.body("{ \"isbn\": \"" + isbn + "\", \"userId\": \"" + userId + "\"}").delete("/BookStore/v1/Book");
+
+	//Fetching the response code from the request and validating the same
+	System.out.println("The response code is - " +res.getStatusCode());
+	Assert.assertEquals(res.getStatusCode(),204);
+}
     
------------------------------------------------------------------------------------------------------------------------------------
+```
 
 # JSON Manipulations
 
 DeSerialize JSON Array to List
 
+```java
+
 @Test
-public void JsonPathUsage() throws MalformedURLException
-{
+public void JsonPathUsage() throws MalformedURLException{
 	RestAssured.baseURI = "https://restapi.demoqa.com/utilities/books/getallbooks";
 	RequestSpecification httpRequest = RestAssured.given();
 	Response response = httpRequest.get("");
@@ -369,17 +382,20 @@ public void JsonPathUsage() throws MalformedURLException
 	List<String> allBooks = jsonPathEvaluator.getList("books.title");
 
 	// Iterate over the list and print individual book item
-	for(String book : allBooks)
-	{
+	for(String book : allBooks){
 		System.out.println("Book: " + book);
 	}
 }
 
+```
+
 DeSerialize JSON Array to List of Class (Type T) Object using JSONPath
 
+
+```java
+
 @Test
-public void JsonPathUsage() throws MalformedURLException
-{
+public void JsonPathUsage() throws MalformedURLException{
 	RestAssured.baseURI = "https://restapi.demoqa.com/utilities/books/getallbooks";
 	RequestSpecification httpRequest = RestAssured.given();
 	Response response = httpRequest.get("");
@@ -393,17 +409,20 @@ public void JsonPathUsage() throws MalformedURLException
 
 	// Iterate over the list and print individual book item
 	// Note that every book entry in the list will be complete Json object of book
-	for(Book book : allBooks)
-	{
+	for(Book book : allBooks){
 		System.out.println("Book: " + book.title);
 	}
 }
 
+```
+
 Deserialize JSON Array to an Array
 
+
+```java
+
 @Test
-public void JsonArrayToArray()
-{
+public void JsonArrayToArray(){
 
 	RestAssured.baseURI = "https://restapi.demoqa.com/utilities/books/getallbooks";
 	RequestSpecification request = RestAssured.given();
@@ -417,15 +436,16 @@ public void JsonArrayToArray()
 	// Book[].class as the second argument to the getObject method.
 	Book[] books = response.jsonPath().getObject("books",Book[].class );
 
-	for(Book book : books)
-	{
+	for(Book book : books){
 		System.out.println("Book title " + book.title);
 	}
 }
 
------------------------------------------------------------------------------------------------------------------------------
+```
 
-My Notes:
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Abhijit Notes Program:
 
 Q: Sample Programs
 import org.testng.annotations.Test;
