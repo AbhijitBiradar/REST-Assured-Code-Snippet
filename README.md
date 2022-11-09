@@ -448,6 +448,9 @@ public void JsonArrayToArray(){
 # Abhijit Notes Program:
 
 Q: Sample Programs
+
+```java 
+
 import org.testng.annotations.Test;
 import io.restassured.RestAssured;
 import io.restassured.http.Method;
@@ -480,8 +483,11 @@ public class SimpleGetTest {
 
 }
 
+```
 
 Q: Validate Response Status using Rest Assured
+
+```java 
 
 @Test
 public void GetWeatherDetails()
@@ -499,7 +505,12 @@ public void GetWeatherDetails()
 	Assert.assertEquals(statusCode /*actual value*/, 200 /*expected value*/, "Correct status code returned");
 }
 
+```
+
 Q: Verify the Status Code returned by Weather web service on providing invalid City name.
+
+```java 
+
 @Test
 public void GetWeatherDetailsInvalidCity()
 {
@@ -510,7 +521,12 @@ public void GetWeatherDetailsInvalidCity()
 	Assert.assertEquals(statusCode /*actual value*/, 200 /*expected value*/, "Correct status code returned");
 }
 
+```
+
 Q: How to Validate Response Status Line?
+
+```java 
+
 @Test
 public void GetWeatherStatusLine()
 {
@@ -523,7 +539,12 @@ public void GetWeatherStatusLine()
 	Assert.assertEquals(statusLine /*actual value*/, "HTTP/1.1 200 OK" /*expected value*/, "Correct status code returned");
 }
 
+```
+
 Q: Validate Response Header using Rest Assured
+
+```java 
+
 @Test
 public void GetWeatherHeaders()
 {
@@ -547,9 +568,12 @@ public void GetWeatherHeaders()
 	Assert.assertEquals(contentEncoding /* actual value */, "gzip" /* expected value */);
 }
 
+```
+
 Q: Read JSON Response Body using Rest Assured
 
-Example 1:
+```java 
+
 @Test
 public void WeatherMessageBody()
 {
@@ -565,7 +589,12 @@ public void WeatherMessageBody()
 	System.out.println("Response Body is: " + body.asString());
 }
 
+```
+
 Q: How to Validate Response Body contains some String?
+
+```java 
+
 @Test
 public void WeatherMessageBody()
 {
@@ -582,7 +611,12 @@ public void WeatherMessageBody()
 	Assert.assertEquals(bodyAsString.contains("Hyderabad") /*Expected value*/, true /*Actual Value*/, "Response body contains Hyderabad");
 }
 
+```
+
 Q: heck String presence by ignoring alphabet casing
+
+```java 
+
 @Test
 public void WeatherMessageBody()
 {
@@ -601,7 +635,11 @@ public void WeatherMessageBody()
 	Assert.assertEquals(bodyAsString.toLowerCase().contains("hyderabad") /*Expected value*/, true /*Actual Value*/, "Response body contains Hyderabad");
 }
 
+```
+
 Q: How to Extract a Node text from Response using JsonPath?
+
+```java 
 
 Sample JSON:
 {
@@ -612,6 +650,7 @@ Sample JSON:
     "Wind Speed": "1 Km per hour",
     "Wind Direction degree": " Degree"
 }
+
 
 @Test
 public void VerifyCityInJsonResponse()
@@ -635,7 +674,11 @@ public void VerifyCityInJsonResponse()
 
 }
 
+```
+
 Q: Read all the nodes from Weather API Response
+
+```java 
 
 @Test
 public void DisplayAllNodesInWeatherAPI()
@@ -666,8 +709,12 @@ public void DisplayAllNodesInWeatherAPI()
 	System.out.println("City received from Response " + jsonPathEvaluator.get("WindDirectionDegree"));
 }
 
+```
 
 Q: Query Parameters
+
+```java 
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import io.restassured.RestAssured;
@@ -693,9 +740,12 @@ public class QUERYPARAMETERRequest {
 	}
 }
 
+```
 
 Q: Sample Post Program
-@Test
+
+```java 
+
 public void RegistrationSuccessful()
 {		
 	RestAssured.baseURI ="https://restapi.demoqa.com/customer";
@@ -717,7 +767,11 @@ public void RegistrationSuccessful()
 	Assert.assertEquals( "Correct Success code was returned", successCode, "OPERATION_SUCCESS");
 }
 
+```
+
 Q: Serialization and Deserialization in Java
+
+```java 
 
 public class Rectangle implements Serializable{
 
@@ -742,8 +796,7 @@ public class Rectangle implements Serializable{
 }
 
 
-public static void SerializeToFile(Object classObject, String fileName)
-{
+public static void SerializeToFile(Object classObject, String fileName){
 	try {
 
 		// Step 1: Open a file output stream to create a file object on disk.
@@ -773,16 +826,14 @@ public static void SerializeToFile(Object classObject, String fileName)
 	}
 }
 
-public static void main(String[] args)
-{
+public static void main(String[] args){
 	Rectangle rect = new Rectangle(18, 78);
 	SerializeToFile(rect, "rectSerialized");
 
 }
 
 
-public static Object DeSerializeFromFileToObject(String fileName)
-{
+public static Object DeSerializeFromFileToObject(String fileName){
 	try {
 
 		// Step 1: Create a file input stream to read the serialized content
@@ -816,8 +867,7 @@ public static Object DeSerializeFromFileToObject(String fileName)
 	return null;
 }
 
-public static void main(String[] args)
-{
+public static void main(String[] args){
 	Rectangle rect = new Rectangle(18, 78);
 	SerializeToFile(rect, "rectSerialized");
 
@@ -825,7 +875,11 @@ public static void main(String[] args)
 	System.out.println("Rect area is " + deSerializedRect.Area());
 }
 
+```
+
 Q: Deserialize Json Response
+
+```java 
 
 Sample JSON Response:
 {
@@ -875,7 +929,11 @@ public void RegistrationSuccessful()
 	Assert.assertEquals("Operation completed successfully", responseBody.Message);
 }
 
+```
+
 Q: How to Deserialize JSON Response Body based on Response Status?
+
+```java 
 
 Sample JSON Response:
 {
@@ -929,7 +987,12 @@ public void RegistrationSuccessful()
 	}	
 }
 
+```
+
 Q: How to make a PUT Request using Rest Assured?
+
+```java 
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import io.restassured.RestAssured;
@@ -939,26 +1002,29 @@ import net.minidev.json.JSONObject;
 
 
 public void UpdateRecords(){
-		int empid = 15410;
+	int empid = 15410;
 
-		RestAssured.baseURI ="https://dummy.restapiexample.com/api/v1";
-		RequestSpecification request = RestAssured.given();
-		
-		JSONObject requestParams = new JSONObject();
-		requestParams.put("name", "Zion"); // Cast
-		requestParams.put("age", 23);
-		requestParams.put("salary", 12000);
+	RestAssured.baseURI ="https://dummy.restapiexample.com/api/v1";
+	RequestSpecification request = RestAssured.given();
 
-		request.body(requestParams.toJSONString());
-		Response response = request.put("/update/"+ empid);
+	JSONObject requestParams = new JSONObject();
+	requestParams.put("name", "Zion"); // Cast
+	requestParams.put("age", 23);
+	requestParams.put("salary", 12000);
 
-		int statusCode = response.getStatusCode();
-		System.out.println(response.asString());
-		Assert.assertEquals(statusCode, 200); 
+	request.body(requestParams.toJSONString());
+	Response response = request.put("/update/"+ empid);
 
-	}
-	
+	int statusCode = response.getStatusCode();
+	System.out.println(response.asString());
+	Assert.assertEquals(statusCode, 200); 
+}
+
+```
+
 Q: How to make a DELETE Request using Rest Assured?
+
+```java 
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -987,9 +1053,14 @@ public void deleteEmpRecord() {
 		
 	String jsonString =response.asString();
 	Assert.assertEquals(jsonString.contains("successfully! deleted Records"), true);
-	}	
+}	
+
+```
 
 Q: DeSerialize JSON Array to List
+
+```java 
+
 @Test
 public void JsonPathUsage() throws MalformedURLException
 {
@@ -1011,7 +1082,11 @@ public void JsonPathUsage() throws MalformedURLException
 	}
 }
 
+```
+
 Q: DeSerialize JSON Array to List of Class (Type T) Object using JSONPath
+
+```java 
 
 public class Book {
 
@@ -1048,7 +1123,12 @@ public void JsonPathUsage() throws MalformedURLException
 	}
 }
 
+```
+
 Q: Deserialize JSON Array to an Array
+
+```java 
+
 @Test
 public void JsonArrayToArray()
 {
@@ -1071,8 +1151,11 @@ public void JsonArrayToArray()
 	}
 }
 
+```
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+# Notes From REST Assured Wiki Docs
 
 Schema and DTD validation
 XML response bodies can also be verified against an XML Schema (XSD) or DTD.
